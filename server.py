@@ -436,11 +436,15 @@ async def generate_media_article(req: dict):
     else:
         messages = media_writer.build_original_article_messages(req)
 
+    # 根据目标字数动态计算所需 token 上限
+    target_words = int(req.get("target_words", 1200))
+    limit_tokens = 800 if not is_vip else min(max(4096, target_words * 2 + 1000), 16384)
+
     async def stream_generator():
         try:
             async for chunk in client.chat_stream(
                 messages,
-                max_tokens=min(req.get("max_tokens", 4096), 800 if not is_vip else 4096),
+                max_tokens=limit_tokens,
                 temperature=req.get("temperature", 0.7)
             ):
                 yield chunk

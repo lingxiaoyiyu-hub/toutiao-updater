@@ -193,11 +193,27 @@ async function startGenerateArticle(mode) {
     payload.source_material = source;
     payload.rewrite_mode = document.getElementById("mw-remix-mode-select").value;
     payload.reference_strength = document.getElementById("mw-remix-strength-select").value;
-    payload.target_words = parseInt(document.getElementById("mw-remix-words-select").value, 10) || 1200;
+    payload.target_words = parseInt(document.getElementById("mw-remix-words-input").value, 10) || 1200;
     payload.remix_style = document.getElementById("mw-remix-style-select").value;
     payload.platform = "今日头条";
     payload.humanize = true;
   }
+
+function setRemixWords(val) {
+  const el = document.getElementById("mw-remix-words-input");
+  if (el) {
+    el.value = val;
+    el.focus();
+  }
+}
+
+function setOriginalWords(val) {
+  const el = document.getElementById("mw-words-input");
+  if (el) {
+    el.value = val;
+    el.focus();
+  }
+}
 
   // 准备流式接收
   generatedMarkdown = "";
