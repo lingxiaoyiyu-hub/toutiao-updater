@@ -191,6 +191,20 @@ class RemoteUpdater:
         if self.download_state["status"] == "downloading":
             return False
 
+        # 严格拦截非二进制下载链接（如直接配置的网页 URL），防止把 HTML 下载为 EXE 损坏本地文件！
+        clean_url = download_url.split("?")[0].lower()
+        if not any(clean_url.endswith(ext) for ext in [".exe", ".zip", ".7z", ".rar"]) and "/releases/download/" not in clean_url:
+            self.download_state = {
+                "status": "error",
+                "progress": 0.0,
+                "downloaded_bytes": 0,
+                "total_bytes": 0,
+                "speed_kb": 0.0,
+                "error": "云端配置的下载地址为网页链接，正在自动为您唤起浏览器下载...",
+                "download_file": ""
+            }
+            return False
+
         self._cancel_flag = False
         self.download_state = {
             "status": "downloading",
