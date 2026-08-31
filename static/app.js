@@ -1159,6 +1159,15 @@ async function startAutoUpgrade() {
     return;
   }
 
+  const dlUrl = latestUpdateData.download_url;
+  const isDirectFile = dlUrl.endsWith(".exe") || dlUrl.endsWith(".zip") || dlUrl.endsWith(".7z") || dlUrl.includes("/releases/download/");
+  if (!isDirectFile) {
+    // 若配置的是网页链接，直接在默认浏览器中拉起下载页面
+    window.open(dlUrl, "_blank");
+    closeUpdateModal();
+    return;
+  }
+
   const btnAuto = document.getElementById("btn-auto-upgrade");
   const progressWrap = document.getElementById("update-progress-wrap");
   const msgEl = document.getElementById("update-msg");

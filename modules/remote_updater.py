@@ -257,6 +257,25 @@ class RemoteUpdater:
                             continue
 
                 if download_ok:
+                    # 严格校验下载文件的文件头 (Magic Bytes)，防止把 GitHub 网页 (HTML) 当作 EXE 覆盖导致损坏！
+                    try:
+                        with open(target_path, "rb") as f:
+                            head = f.read(4)
+                        
+                        is_valid_exe = head.startswith(b'MZ')
+                        is_valid_zip = head.startswith(b'PK')
+
+                        if not (is_valid_exe or is_valid_zip):
+                            if target_path.exists():
+                                target_path.unlink()
+                            self.download_state["status"] = "error"
+                            self.download_state["error"] = "下载链接返回了网页而非安装包，已安全拦截并保护本地文件！"
+                            return
+                    except Exception as verify_err:
+                        self.download_state["status"] = "error"
+                        self.download_state["error"] = f"文件校验异常: {verify_err}"
+                        return
+
                     self.download_state["status"] = "completed"
                     self.download_state["progress"] = 100.0
                 else:
@@ -280,6 +299,12 @@ class RemoteUpdater:
             return {"success": False, "message": "未找到已下载的更新文件"}
 
         target_path = Path(target_file_str)
+
+        # 严格二次校验 Magic Bytes
+        with open(target_path, "rb") as f:
+            head = f.read(4)
+        if not (head.startswith(b'MZ') or head.startswith(b'PK')):
+            return {"success": False, "message": "下载的文件非有效 Windows 程序，拒绝执行替换！"}
         is_frozen = getattr(sys, "frozen", False)
         current_pid = os.getpid()
 
