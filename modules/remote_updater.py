@@ -31,10 +31,8 @@ CURRENT_VERSION = "2.5.0"
 # 默认官方远程版本清单探测源 (支持多源容错 fallback)
 # 开发者可在 data/ai_config.json 或环境变量 TOUTIAO_UPDATE_URL 中自定义为自己的服务器地址
 DEFAULT_UPDATE_URLS = [
-    # 示例 1: 自建服务器或 OSS 地址 (请替换为您自己的域名/OSS地址)
-    "https://api.github.com/repos/your-org/toutiao-studio/releases/latest",
-    # 示例 2: Gitee / CDN 静态 JSON 地址
-    "https://gitee.com/your-org/toutiao-studio/raw/master/version.json"
+    "https://raw.githubusercontent.com/lingxiaoyiyu-hub/toutiao-updater/main/version.json",
+    "https://cdn.jsdelivr.net/gh/lingxiaoyiyu-hub/toutiao-updater@main/version.json"
 ]
 
 
