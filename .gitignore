@@ -29,6 +29,9 @@ data/.sys_state.dat
 license.dat
 license_tool/issued_licenses.txt
 
+# Ed25519 授权私钥 (绝不允许进入版本库/公网，仅管理员本地持有)
+license_tool/license_private_key.pem
+
 # 敏感 AI 配置 (请基于 ai_config.json.example 配置)
 data/ai_config.json
 
