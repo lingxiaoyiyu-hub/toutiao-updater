@@ -2,7 +2,7 @@
   "latest_version": "2.6.1",
   "release_date": "2026-08-31",
   "force_update": false,
-  "title": "🎉 今日头条采集大师 & 自媒体AI创作工作台 v2.6.1 更新",
+  "title": "🎉 LingCraft & LingCraft · 全能创作工具 v2.6.1 更新",
   "changelog": [
     "1. 🔐【安全加固】修复机器码缓存绕过换机漏洞，会员授权更可靠",
     "2. 🛡️【安全加固】更新包增加 SHA256 完整性校验，杜绝安装包投毒",

@@ -1,4 +1,4 @@
-# 今日头条文章采集大师 & 自媒体AI创作工作台 (Toutiao Scraper Studio Pro)
+# LingCraft & LingCraft · 全能创作工具 (Toutiao Scraper Studio Pro)
 
 > 基于 **Playwright / Patchright 隐蔽内核 + FastAPI + 现代化 Glassmorphic Web UI + 大模型自媒体创作引擎** 构建的今日头条作者文章全自动采集、全网实时热点追踪、AI 爆款二创改写、Word 图文排版与数据分析系统。
 
