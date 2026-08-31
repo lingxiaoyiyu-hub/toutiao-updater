@@ -804,15 +804,14 @@
   </div>
 
   <!-- ================= 云端远程更新弹窗 (Update Modal) ================= -->
-  <div id="update-modal" class="modal" style="display:none;">
-    <div class="modal-overlay" onclick="closeUpdateModal()"></div>
-    <div class="modal-content" style="max-width:480px; border-radius:12px;">
-      <div class="modal-header" style="border-bottom:1px solid var(--border); padding:16px 20px;">
+  <div id="update-modal" class="modal-backdrop" style="display:none;" onclick="if(event.target===this)closeUpdateModal()">
+    <div class="modal-card" style="max-width:480px;">
+      <div class="modal-header">
         <h3 id="update-modal-title" style="display:flex; align-items:center; gap:8px; margin:0; font-size:15px; font-weight:700;">
           <span style="font-size:18px;">🚀</span>
           <span>发现新版本</span>
         </h3>
-        <button class="modal-close" onclick="closeUpdateModal()">×</button>
+        <button class="close-btn" onclick="closeUpdateModal()">×</button>
       </div>
       <div class="modal-body" style="padding:18px 20px;">
         <!-- 版本对比 -->
