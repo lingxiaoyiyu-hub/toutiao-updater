@@ -104,12 +104,14 @@ class MediaAIClient:
         return headers
 
     def _get_endpoint(self) -> str:
-        base = self.api_base
-        if not base.endswith("/chat/completions"):
-            if not base.endswith("/v1"):
-                base = f"{base}/v1"
-            base = f"{base}/chat/completions"
-        return base
+        base = self.api_base.rstrip("/")
+        if base.endswith("/chat/completions"):
+            return base
+        # 若已经以 /v1, /v2, /v3, /v4 等版本结尾（例如智谱 open.bigmodel.cn/api/paas/v4），直接追加 /chat/completions
+        if re.search(r"/v\d+$", base):
+            return f"{base}/chat/completions"
+        # 否则默认补充 /v1/chat/completions (如 https://api.deepseek.com)
+        return f"{base}/v1/chat/completions"
 
     async def chat_stream(
         self,

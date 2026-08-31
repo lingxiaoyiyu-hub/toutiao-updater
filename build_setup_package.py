@@ -33,7 +33,7 @@ INSTALLER_PY = BASE_DIR / "installer_wizard.py"
 
 def create_installer_wizard_script():
     """创建图形化安装向导源码"""
-    code = '''# -*- coding: utf-8 -*-
+    code = r'''# -*- coding: utf-8 -*-
 import os
 import sys
 import time
@@ -143,7 +143,11 @@ class SetupWizard(tk.Tk):
     def browse_folder(self):
         f = filedialog.askdirectory(title="选择安装目录", initialdir=self.install_dir.get())
         if f:
-            self.install_dir.set(os.path.join(f, "XCbot Toutiao Studio"))
+            clean_f = os.path.normpath(f)
+            if not clean_f.lower().endswith("xcbot toutiao studio"):
+                self.install_dir.set(os.path.join(clean_f, "XCbot Toutiao Studio"))
+            else:
+                self.install_dir.set(clean_f)
 
     def render_step_3(self):
         self.clear_content()
@@ -170,24 +174,33 @@ class SetupWizard(tk.Tk):
             payload_zip = os.path.join(getattr(sys, '_MEIPASS', os.path.dirname(__file__)), "app_payload.zip")
 
         try:
+            total_bytes = 0
             with zipfile.ZipFile(payload_zip, 'r') as zf:
                 files = zf.namelist()
                 total = len(files)
                 for i, f in enumerate(files):
+                    info = zf.getinfo(f)
+                    total_bytes += info.file_size
                     zf.extract(f, dest_dir)
                     pct = int(((i + 1) / total) * 90)
                     self.progress_bar['value'] = pct
                     self.progress_lbl.config(text=f"正在安装: {os.path.basename(f)} ({pct}%)")
                     time.sleep(0.003)
 
-            self.progress_lbl.config(text="正在创建桌面快捷方式...")
+            self.progress_lbl.config(text="正在创建系统快捷方式与注册卸载入口...")
             exe_path = os.path.join(dest_dir, "ToutiaoStudio.exe")
+            uninst_path = os.path.join(dest_dir, "uninstall.exe")
 
             if self.create_desktop_icon.get() and os.name == 'nt':
-                self.create_windows_shortcut(exe_path, "Desktop")
+                self.create_windows_shortcut(exe_path, "Desktop", "今日头条采集工作台.lnk")
 
             if self.create_start_menu.get() and os.name == 'nt':
-                self.create_windows_shortcut(exe_path, "StartMenu")
+                self.create_windows_shortcut(exe_path, "StartMenu", "今日头条采集工作台.lnk")
+                if os.path.exists(uninst_path):
+                    self.create_windows_shortcut(uninst_path, "StartMenu", "卸载今日头条采集工作台.lnk")
+
+            # 注册到 Windows 系统卸载控制面板 (设置 > 已安装的应用)
+            self.register_windows_uninstall(dest_dir, total_bytes)
 
             self.progress_bar['value'] = 100
             self.after(500, self.render_step_4)
@@ -195,7 +208,29 @@ class SetupWizard(tk.Tk):
             messagebox.showerror("安装失败", f"部署过程中出现异常: {e}")
             self.destroy()
 
-    def create_windows_shortcut(self, target_exe, location):
+    def register_windows_uninstall(self, dest_dir, total_bytes):
+        """向 Windows 注册表注入标准应用程序卸载条目"""
+        if os.name != 'nt':
+            return
+        try:
+            import winreg
+            key_path = r"Software\Microsoft\Windows\CurrentVersion\Uninstall\XCbotToutiaoStudio"
+            with winreg.CreateKey(winreg.HKEY_CURRENT_USER, key_path) as key:
+                winreg.SetValueEx(key, "DisplayName", 0, winreg.REG_SZ, "XCbot · 今日头条文章采集与自媒体AI创作工作台")
+                winreg.SetValueEx(key, "DisplayVersion", 0, winreg.REG_SZ, "2.5.0")
+                winreg.SetValueEx(key, "Publisher", 0, winreg.REG_SZ, "XCbot Studio")
+                winreg.SetValueEx(key, "InstallLocation", 0, winreg.REG_SZ, dest_dir)
+                winreg.SetValueEx(key, "UninstallString", 0, winreg.REG_SZ, f'"{os.path.join(dest_dir, "uninstall.exe")}"')
+                winreg.SetValueEx(key, "QuietUninstallString", 0, winreg.REG_SZ, f'"{os.path.join(dest_dir, "uninstall.exe")}" /S')
+                winreg.SetValueEx(key, "DisplayIcon", 0, winreg.REG_SZ, f'{os.path.join(dest_dir, "ToutiaoStudio.exe")},0')
+                winreg.SetValueEx(key, "EstimatedSize", 0, winreg.REG_DWORD, int(total_bytes / 1024) if total_bytes > 0 else 550000)
+                winreg.SetValueEx(key, "URLInfoAbout", 0, winreg.REG_SZ, "https://github.com/lingxiaoyiyu-hub/toutiao-updater")
+                winreg.SetValueEx(key, "NoModify", 0, winreg.REG_DWORD, 1)
+                winreg.SetValueEx(key, "NoRepair", 0, winreg.REG_DWORD, 1)
+        except Exception as e:
+            print("注册卸载信息异常:", e)
+
+    def create_windows_shortcut(self, target_exe, location, lnk_name="今日头条采集工作台.lnk"):
         try:
             import win32com.client
             shell = win32com.client.Dispatch("WScript.Shell")
@@ -205,16 +240,16 @@ class SetupWizard(tk.Tk):
                 s_dir = os.path.join(shell.SpecialFolders("StartMenu"), "Programs", "XCbot Studio")
                 os.makedirs(s_dir, exist_ok=True)
             
-            shortcut_path = os.path.join(s_dir, "今日头条采集工作台.lnk")
+            shortcut_path = os.path.join(s_dir, lnk_name)
             shortcut = shell.CreateShortCut(shortcut_path)
             shortcut.Targetpath = target_exe
             shortcut.WorkingDirectory = os.path.dirname(target_exe)
             shortcut.IconLocation = target_exe
-            shortcut.Description = "今日头条文章采集与自媒体AI创作工作台"
+            shortcut.Description = "XCbot · 今日头条文章采集与自媒体AI创作工作台"
             shortcut.save()
         except Exception:
             try:
-                ps_cmd = f'$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut([System.IO.Path]::Combine([Environment]::GetFolderPath("Desktop"), "今日头条采集工作台.lnk")); $s.TargetPath = "{target_exe}"; $s.WorkingDirectory = "{os.path.dirname(target_exe)}"; $s.IconLocation = "{target_exe},0"; $s.Save()'
+                ps_cmd = f'$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut([System.IO.Path]::Combine([Environment]::GetFolderPath("{location}"), "{lnk_name}")); $s.TargetPath = "{target_exe}"; $s.WorkingDirectory = "{os.path.dirname(target_exe)}"; $s.IconLocation = "{target_exe},0"; $s.Save()'
                 os.system(f'powershell -Command "{ps_cmd}"')
             except Exception:
                 pass

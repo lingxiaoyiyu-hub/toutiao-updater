@@ -151,6 +151,9 @@ function fillAiPreset(preset) {
   if (preset === "deepseek") {
     document.getElementById("ai-cfg-base").value = "https://api.deepseek.com";
     document.getElementById("ai-cfg-model").value = "deepseek-chat";
+  } else if (preset === "zhipu") {
+    document.getElementById("ai-cfg-base").value = "https://open.bigmodel.cn/api/paas/v4";
+    document.getElementById("ai-cfg-model").value = "glm-4-flash";
   } else if (preset === "openai") {
     document.getElementById("ai-cfg-base").value = "https://api.openai.com/v1";
     document.getElementById("ai-cfg-model").value = "gpt-4o-mini";
