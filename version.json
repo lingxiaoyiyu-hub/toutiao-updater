@@ -1,20 +1,20 @@
 {
-  "latest_version": "2.6.0",
+  "latest_version": "2.6.1",
   "release_date": "2026-08-31",
   "force_update": false,
-  "title": "🎉 今日头条采集大师 & 自媒体AI创作工作台 v2.6.0 深度升级",
+  "title": "🎉 今日头条采集大师 & 自媒体AI创作工作台 v2.6.1 更新",
   "changelog": [
-    "1. 🚀【全新功能】AI 二创支持完全自定义字数，新增 600~5000 字快捷选择胶囊",
-    "2. 🛑【重大升级】采集过程支持随时一键中止，已抓取文章安全导出不丢失",
+    "1. 🚀【全新功能】AI 二创支持完全自定义字数，自由输入不限档位",
+    "2. 🛑【重大升级】采集过程支持随时一键中止（~0.1 秒即时响应）",
     "3. 🌐【云端引擎】集成 GitHub 极速远程推送与紧急反爬广播系统",
     "4. 🔐【底层加固】Windows 物理硬件指纹永久持久化，会员激活永不失效",
-    "5. 📦【整包更新】全新整包热升级引擎，一键下载覆盖自动重启，彻底告别热补丁失效"
+    "5. 📦【整包更新】全新整包升级引擎，一键下载覆盖自动重启"
   ],
   "download_url": "https://github.com/lingxiaoyiyu-hub/toutiao-updater/releases/download/v2.6.0/ToutiaoStudio_v2.6.0_full.zip",
   "hot_update_zip_url": "https://github.com/lingxiaoyiyu-hub/toutiao-updater/releases/download/v2.6.0/ToutiaoStudio_v2.6.0_full.zip",
   "announcement": {
-    "id": "ann_20260831_v260",
-    "title": "📢 官方正式发布通知",
-    "content": "✨ 头条采集大师 v2.6.0 正式发布！本次升级带来整包一键更新、自定义字数二创与随时中止采集等多项重磅功能，请点击右上角版本号立即升级体验！"
+    "id": "ann_20260831_v261",
+    "title": "📢 整包更新功能测试",
+    "content": "✨ 本次为整包更新流程测试：请点击右上角版本号，再点击【立即更新】体验一键下载覆盖自动重启。"
   }
 }
