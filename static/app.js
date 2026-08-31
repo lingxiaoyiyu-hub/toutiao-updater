@@ -1001,7 +1001,9 @@ let updatePollTimer = null;
 async function fetchUpdateCheck(silent = false) {
   try {
     const res = await fetch("/api/system/check-update");
-    if (!res.ok) return;
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
     const data = await res.json();
     latestUpdateData = data;
 
@@ -1044,6 +1046,10 @@ async function fetchUpdateCheck(silent = false) {
     }
   } catch (err) {
     console.error("检查更新失败:", err);
+    const latVerEl = document.getElementById("modal-latest-version");
+    const changeListEl = document.getElementById("update-changelog-list");
+    if (latVerEl) latVerEl.innerText = "网络异常";
+    if (changeListEl) changeListEl.innerHTML = `<div style="color:#d6336c;">• 检查更新失败: ${err.message}</div>`;
   }
 }
 
