@@ -1,0 +1,8 @@
+{
+  "_comment": "AI 大模型配置模板 (支持 DeepSeek / 阶跃星辰 / 通义千问 / OpenAI / SiliconFlow 等所有 OpenAI 兼容格式)",
+  "api_base": "https://api.deepseek.com/v1",
+  "api_key": "sk-your-api-key-here",
+  "model_name": "deepseek-chat",
+  "temperature": 0.7,
+  "max_tokens": 4096
+}

@@ -1,0 +1,20 @@
+{
+  "_comment": "XCbot 客户端云端版本推送清单模板 (上传至 Gitee / GitHub / 阿里云OSS / 自建服务器)",
+  "latest_version": "2.6.0",
+  "release_date": "2026-09-01",
+  "force_update": false,
+  "title": "🎉 今日头条采集大师 v2.6.0 深度更新发布",
+  "changelog": [
+    "1. 🚀 升级反反爬内核，完美适配今日头条最新接口与正文渲染",
+    "2. ✍️ 自媒体 AI 创作台新增知乎高赞/小红书爆款文风模式",
+    "3. 📄 优化 Word (.docx) 图文导出排版与高清图片压缩比例",
+    "4. ⚡ 修复离线机器码识别并提升 50% 启动性能"
+  ],
+  "download_url": "https://your-domain.com/downloads/ToutiaoStudio_Setup_v2.6.0.exe",
+  "hot_update_zip_url": "https://your-domain.com/downloads/patch_v2.6.0.zip",
+  "announcement": {
+    "id": "ann_20260901",
+    "title": "今日头条规则更新提醒",
+    "content": "今日头条 PC 端热搜规则已适配完毕，已为您全面开启最新数据流追踪！"
+  }
+}

@@ -1,0 +1,41 @@
+# Python 运行缓存与字节码
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# PyInstaller / 构建产物
+build/
+dist/
+release/
+*.spec
+
+# 爬虫与输出缓存数据
+toutiao_output/
+test_img_output/
+*.log
+*.zip
+*.tar.gz
+
+# 动态生成的私密运行凭证与水印状态
+data/.sys_state.dat
+license.dat
+license_tool/issued_licenses.txt
+
+# 敏感 AI 配置 (请基于 ai_config.json.example 配置)
+data/ai_config.json
+
+# IDE / 编辑器配置
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
