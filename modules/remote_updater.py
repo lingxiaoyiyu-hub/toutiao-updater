@@ -49,32 +49,28 @@ def parse_version(v_str: str) -> tuple:
 def resolve_github_mirrors(url: str) -> List[str]:
     """
     智能解析 GitHub 链接并生成国内极速 CDN 与镜像候选列表
-    解决国内直连 GitHub raw.githubusercontent.com 经常被墙/超时的痛点！
+    优先直连，若遇网络波动自动尝试备用镜像节点
     """
     clean_url = url.strip()
     mirrors = [clean_url]
 
-    # 处理 raw.githubusercontent.com 格式: https://raw.githubusercontent.com/owner/repo/branch/path/to/file
+    # 处理 raw.githubusercontent.com 格式
     raw_match = re.match(r'https?://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)', clean_url)
     if raw_match:
         owner, repo, branch, path = raw_match.groups()
-        # 1. jsDelivr 全球极速 CDN (国内秒开)
-        mirrors.insert(0, f"https://cdn.jsdelivr.net/gh/{owner}/{repo}@{branch}/{path}")
-        # 2. ghproxy 镜像代理
-        mirrors.insert(1, f"https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}")
+        mirrors.append(f"https://fastly.jsdelivr.net/gh/{owner}/{repo}@{branch}/{path}")
+        mirrors.append(f"https://cdn.jsdelivr.net/gh/{owner}/{repo}@{branch}/{path}")
         return mirrors
 
     # 处理 github.com/owner/repo/raw/branch/path 格式
     gh_match = re.match(r'https?://github\.com/([^/]+)/([^/]+)/raw/([^/]+)/(.+)', clean_url)
     if gh_match:
         owner, repo, branch, path = gh_match.groups()
-        mirrors.insert(0, f"https://cdn.jsdelivr.net/gh/{owner}/{repo}@{branch}/{path}")
-        mirrors.insert(1, f"https://ghproxy.net/https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}")
+        raw_direct = f"https://raw.githubusercontent.com/{owner}/{repo}/{branch}/{path}"
+        if raw_direct not in mirrors:
+            mirrors.insert(0, raw_direct)
+        mirrors.append(f"https://fastly.jsdelivr.net/gh/{owner}/{repo}@{branch}/{path}")
         return mirrors
-
-    # 处理 github release 下载链接
-    if "github.com" in clean_url and "/releases/download/" in clean_url:
-        mirrors.insert(0, f"https://ghproxy.net/{clean_url}")
 
     return mirrors
 
