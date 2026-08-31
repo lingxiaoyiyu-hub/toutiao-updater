@@ -92,14 +92,7 @@
     </div>
   </header>
 
-  <!-- 📢 远程云端通知/反爬紧急公告栏 -->
-  <div id="remote-announcement-banner" class="announcement-banner" style="display:none;">
-    <div class="announcement-content">
-      <span class="announcement-tag">📢 云端通知</span>
-      <span id="announcement-text"></span>
-    </div>
-    <button class="announcement-close" onclick="closeAnnouncement()">×</button>
-  </div>
+
 
   <!-- ================= 主体内容 ================= -->
   <div class="main">
@@ -813,63 +806,65 @@
   <!-- ================= 云端远程更新弹窗 (Update Modal) ================= -->
   <div id="update-modal" class="modal" style="display:none;">
     <div class="modal-overlay" onclick="closeUpdateModal()"></div>
-    <div class="modal-content" style="max-width:540px;">
-      <div class="modal-header">
-        <h3 id="update-modal-title" style="display:flex; align-items:center; gap:8px;">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="#0d9488" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-          <span>云端版本更新检查</span>
+    <div class="modal-content" style="max-width:480px; border-radius:12px;">
+      <div class="modal-header" style="border-bottom:1px solid var(--border); padding:16px 20px;">
+        <h3 id="update-modal-title" style="display:flex; align-items:center; gap:8px; margin:0; font-size:15px; font-weight:700;">
+          <span style="font-size:18px;">🚀</span>
+          <span>发现新版本</span>
         </h3>
         <button class="modal-close" onclick="closeUpdateModal()">×</button>
       </div>
-      <div class="modal-body" style="padding:16px 20px;">
+      <div class="modal-body" style="padding:18px 20px;">
         <!-- 版本对比 -->
-        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle); border-radius:8px; padding:12px 16px; margin-bottom:14px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle); border-radius:8px; padding:12px 18px; margin-bottom:14px;">
           <div>
             <div style="font-size:11px; color:var(--muted-2);">当前运行版本</div>
-            <div id="modal-cur-version" style="font-size:15px; font-weight:700; font-family:var(--mono); color:var(--fg);">v2.5.0</div>
+            <div id="modal-cur-version" style="font-size:14px; font-weight:700; font-family:var(--mono); color:var(--muted);">v2.5.0</div>
           </div>
-          <div style="font-size:18px; color:var(--muted);">➔</div>
+          <div style="font-size:16px; color:var(--muted);">➔</div>
           <div>
             <div style="font-size:11px; color:var(--muted-2);">云端最新版本</div>
-            <div id="modal-latest-version" style="font-size:15px; font-weight:800; font-family:var(--mono); color:#0d9488;">检测中...</div>
+            <div id="modal-latest-version" style="font-size:15px; font-weight:800; font-family:var(--mono); color:#0d9488;">v2.6.0</div>
           </div>
         </div>
 
+        <!-- 广播公告提示 (若有) -->
+        <div id="update-announcement-callout" style="display:none; background:#f0fdfa; border:1px solid #ccfbf1; border-radius:6px; padding:8px 12px; margin-bottom:12px; font-size:12px; color:#0f766e;">
+          <span id="update-announcement-callout-text"></span>
+        </div>
+
         <!-- 更新日志区域 -->
-        <div id="update-changelog-box" style="margin-bottom:14px;">
-          <div style="font-size:12px; font-weight:700; margin-bottom:6px; color:var(--fg);">✨ 新版更新内容：</div>
-          <div id="update-changelog-list" style="background:#fff; border:1px solid var(--border); border-radius:6px; padding:10px 14px; max-height:140px; overflow-y:auto; font-size:11.5px; line-height:1.7; color:var(--fg);">
+        <div id="update-changelog-box" style="margin-bottom:16px;">
+          <div style="font-size:12px; font-weight:700; margin-bottom:8px; color:var(--fg);">✨ 更新内容：</div>
+          <div id="update-changelog-list" style="background:#fff; border:1px solid var(--border); border-radius:8px; padding:12px 14px; max-height:150px; overflow-y:auto; font-size:12px; line-height:1.8; color:var(--fg);">
             正在获取更新日志...
           </div>
         </div>
 
         <!-- 进度条 (下载中展示) -->
-        <div id="update-progress-wrap" style="display:none; margin-bottom:14px;">
-          <div style="display:flex; justify-content:space-between; font-size:11.5px; margin-bottom:4px;">
+        <div id="update-progress-wrap" style="display:none; margin-bottom:16px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
             <span id="update-progress-status" style="color:var(--fg); font-weight:600;">正在下载更新包...</span>
             <span id="update-progress-percent" style="font-family:var(--mono); color:#0d9488; font-weight:700;">0%</span>
           </div>
           <div style="background:var(--border); border-radius:999px; height:8px; overflow:hidden;">
             <div id="update-progress-bar" style="background:linear-gradient(90deg, #0d9488, #2f6fed); width:0%; height:100%; transition:width 0.2s ease;"></div>
           </div>
-          <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted-2); margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:10.5px; color:var(--muted-2); margin-top:5px;">
             <span id="update-speed-text">0 KB/s</span>
             <span id="update-size-text">0 / 0 MB</span>
           </div>
         </div>
 
-        <div id="update-msg" style="display:none; font-size:12px; text-align:center; margin-bottom:10px;"></div>
+        <div id="update-msg" style="display:none; font-size:12px; text-align:center; margin-bottom:12px;"></div>
 
-        <!-- 操作按钮 -->
-        <div style="display:flex; gap:10px;">
-          <button id="btn-manual-download" onclick="manualDownloadUpdate()" class="telegram-btn" style="flex:1; justify-content:center; padding:10px; display:none;">
-            浏览器下载
+        <!-- 底部操作按钮: 稍后更新 vs 立即更新 -->
+        <div id="update-btn-group" style="display:flex; gap:12px;">
+          <button id="btn-cancel-update" onclick="closeUpdateModal()" class="telegram-btn" style="flex:1; justify-content:center; padding:10px; font-size:13px; background:#f1f5f9; border:1px solid var(--border); color:var(--fg);">
+            稍后更新
           </button>
-          <button id="btn-auto-upgrade" onclick="startAutoUpgrade()" class="shop-btn" style="flex:2; justify-content:center; padding:10px; font-size:13px;">
-            一键在线升级
-          </button>
-          <button id="btn-recheck-update" onclick="fetchUpdateCheck(true)" class="shop-btn" style="flex:1; justify-content:center; padding:10px; font-size:13px; display:none;">
-            重新检查
+          <button id="btn-auto-upgrade" onclick="startAutoUpgrade()" class="shop-btn" style="flex:1.5; justify-content:center; padding:10px; font-size:13px; background:#0f1013; color:#fff;">
+            立即更新
           </button>
         </div>
       </div>

@@ -1000,8 +1000,9 @@ function copyContact(val, name) {
 // ================= 远程更新与云端推送逻辑 =================
 let latestUpdateData = null;
 let updatePollTimer = null;
+let hasAutoPromptedUpdate = false; // 避免单次会话重复自动弹窗打扰
 
-async function fetchUpdateCheck(silent = false) {
+async function fetchUpdateCheck(isManualClick = false) {
   try {
     const res = await fetch("/api/system/check-update");
     if (!res.ok) {
@@ -1010,7 +1011,7 @@ async function fetchUpdateCheck(silent = false) {
     const data = await res.json();
     latestUpdateData = data;
 
-    // 1. 更新顶部版本号与红点状态
+    // 1. 更新顶部版本号
     const badgeText = document.getElementById("update-badge-text");
     const pulseDot = document.getElementById("update-pulse-dot");
     const updateBtn = document.getElementById("btn-check-update");
@@ -1025,40 +1026,33 @@ async function fetchUpdateCheck(silent = false) {
         updateBtn.classList.add("has-new");
         updateBtn.title = `✨ 发现新版本 v${data.latest_version}，点击立即更新！`;
       }
+
+      // 🌟 有更新时直接弹出更新提示弹窗（启动或手动触发）
+      if (!hasAutoPromptedUpdate || isManualClick) {
+        hasAutoPromptedUpdate = true;
+        openUpdateModal();
+      }
     } else {
       if (pulseDot) pulseDot.style.display = "none";
       if (updateBtn) {
         updateBtn.classList.remove("has-new");
         updateBtn.title = "已是最新版本";
       }
-    }
-
-    // 2. 检查是否有远程公告推送
-    if (data.announcement && data.announcement.content) {
-      const banner = document.getElementById("remote-announcement-banner");
-      const annText = document.getElementById("announcement-text");
-      if (banner && annText) {
-        annText.innerText = data.announcement.content;
-        banner.style.display = "flex";
+      // 手动点击且无更新时弹窗告知
+      if (isManualClick) {
+        openUpdateModal();
       }
-    }
-
-    // 若非静默启动检查，自动弹窗
-    if (!silent) {
-      openUpdateModal();
     }
   } catch (err) {
     console.error("检查更新失败:", err);
-    const latVerEl = document.getElementById("modal-latest-version");
-    const changeListEl = document.getElementById("update-changelog-list");
-    if (latVerEl) latVerEl.innerText = "网络异常";
-    if (changeListEl) changeListEl.innerHTML = `<div style="color:#d6336c;">• 检查更新失败: ${err.message}</div>`;
+    if (isManualClick) {
+      openUpdateModal();
+      const latVerEl = document.getElementById("modal-latest-version");
+      const changeListEl = document.getElementById("update-changelog-list");
+      if (latVerEl) latVerEl.innerText = "网络异常";
+      if (changeListEl) changeListEl.innerHTML = `<div style="color:#d6336c;">• 检查更新失败: ${err.message}</div>`;
+    }
   }
-}
-
-function closeAnnouncement() {
-  const banner = document.getElementById("remote-announcement-banner");
-  if (banner) banner.style.display = "none";
 }
 
 function openUpdateModal() {
@@ -1066,18 +1060,15 @@ function openUpdateModal() {
   if (!modal) return;
   modal.style.display = "flex";
 
-  const curVerEl = document.getElementById("modal-cur-version");
-  const latVerEl = document.getElementById("modal-latest-version");
-  const changeListEl = document.getElementById("update-changelog-list");
-  const btnAuto = document.getElementById("btn-auto-upgrade");
-  const btnManual = document.getElementById("btn-manual-download");
-  const msgEl = document.getElementById("update-msg");
   const progressWrap = document.getElementById("update-progress-wrap");
+  const msgEl = document.getElementById("update-msg");
 
   if (progressWrap) progressWrap.style.display = "none";
   if (msgEl) msgEl.style.display = "none";
 
   if (!latestUpdateData) {
+    const latVerEl = document.getElementById("modal-latest-version");
+    const changeListEl = document.getElementById("update-changelog-list");
     if (latVerEl) latVerEl.innerText = "正在查询...";
     if (changeListEl) changeListEl.innerHTML = "正在连接云端服务器...";
     fetchUpdateCheck(true).then(() => renderUpdateModalContent());
@@ -1093,8 +1084,10 @@ function renderUpdateModalContent() {
   const curVerEl = document.getElementById("modal-cur-version");
   const latVerEl = document.getElementById("modal-latest-version");
   const changeListEl = document.getElementById("update-changelog-list");
-  const btnAuto = document.getElementById("btn-auto-upgrade");
-  const btnManual = document.getElementById("btn-manual-download");
+  const titleEl = document.getElementById("update-modal-title");
+  const btnGroup = document.getElementById("update-btn-group");
+  const calloutEl = document.getElementById("update-announcement-callout");
+  const calloutText = document.getElementById("update-announcement-callout-text");
 
   if (curVerEl) curVerEl.innerText = `v${d.current_version}`;
   if (latVerEl) {
@@ -1102,31 +1095,45 @@ function renderUpdateModalContent() {
     latVerEl.style.color = d.has_update ? "#0d9488" : "#64748b";
   }
 
-  if (changeListEl) {
-    if (d.changelog && d.changelog.length > 0) {
-      changeListEl.innerHTML = d.changelog.map(item => `<div>${item}</div>`).join("");
-    } else {
-      changeListEl.innerHTML = d.has_update
-        ? `<div>• 发现新版本 v${d.latest_version}，包含重要性能优化与功能升级。</div>`
-        : `<div>✓ 当前已是最新版本 (v${d.current_version})，运行稳定，无需更新。</div>`;
-    }
+  // 广播公告
+  if (d.announcement && d.announcement.content && calloutEl && calloutText) {
+    calloutText.innerText = d.announcement.content;
+    calloutEl.style.display = "block";
+  } else if (calloutEl) {
+    calloutEl.style.display = "none";
   }
 
   if (d.has_update) {
-    if (btnAuto) {
-      btnAuto.style.display = "flex";
-      btnAuto.innerText = "一键在线升级";
-      btnAuto.disabled = false;
+    if (titleEl) titleEl.innerHTML = `<span>🚀</span> <span>发现新版本 v${d.latest_version}</span>`;
+    if (changeListEl) {
+      if (d.changelog && d.changelog.length > 0) {
+        changeListEl.innerHTML = d.changelog.map(item => `<div>${item}</div>`).join("");
+      } else {
+        changeListEl.innerHTML = `<div>• 发现新版本 v${d.latest_version}，包含重要性能优化与功能升级。</div>`;
+      }
     }
-    if (btnManual && d.download_url) {
-      btnManual.style.display = "flex";
+
+    if (btnGroup) {
+      btnGroup.innerHTML = `
+        <button id="btn-cancel-update" onclick="closeUpdateModal()" class="telegram-btn" style="flex:1; justify-content:center; padding:10px; font-size:13px; background:#f1f5f9; border:1px solid var(--border); color:var(--fg);">
+          稍后更新
+        </button>
+        <button id="btn-auto-upgrade" onclick="startAutoUpgrade()" class="shop-btn" style="flex:1.5; justify-content:center; padding:10px; font-size:13px; background:#0f1013; color:#fff;">
+          立即更新
+        </button>
+      `;
     }
   } else {
-    if (btnAuto) {
-      btnAuto.style.display = "none";
+    if (titleEl) titleEl.innerHTML = `<span>🛡️</span> <span>云端版本检测</span>`;
+    if (changeListEl) {
+      changeListEl.innerHTML = `<div>✓ 当前已是最新版本 (v${d.current_version})，运行稳定，无需更新。</div>`;
     }
-    if (btnManual) {
-      btnManual.style.display = "none";
+    if (btnGroup) {
+      btnGroup.innerHTML = `
+        <button onclick="closeUpdateModal()" class="shop-btn" style="flex:1; justify-content:center; padding:10px; font-size:13px; background:#0f1013; color:#fff;">
+          我知道了
+        </button>
+      `;
     }
   }
 }
