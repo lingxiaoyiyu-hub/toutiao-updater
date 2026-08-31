@@ -283,67 +283,94 @@ class RemoteUpdater:
         is_frozen = getattr(sys, "frozen", False)
         current_pid = os.getpid()
 
-        # 方案 A: 若为静态资源/模块热补丁 (.zip)
+        # 方案 A: 若为静态资源/模块热补丁或绿色完整包 (.zip)
         if target_path.suffix.lower() == ".zip":
             try:
                 extract_root = Path(sys.executable).parent if is_frozen else Path(__file__).parent.parent
                 with zipfile.ZipFile(target_path, "r") as zf:
                     zf.extractall(extract_root)
+                
+                # 触发自动重启
+                if sys.platform == "win32":
+                    current_exe = Path(sys.executable) if is_frozen else (Path(__file__).parent.parent / "run_app.bat")
+                    bat_script = get_app_data_dir() / "apply_restart.bat"
+                    bat_content = f"""@echo off
+chcp 65001 >nul
+ping 127.0.0.1 -n 2 >nul
+taskkill /F /PID {current_pid} >nul 2>&1
+ping 127.0.0.1 -n 2 >nul
+start "" "{current_exe}"
+del "%~f0"
+exit
+"""
+                    bat_script.write_text(bat_content, encoding="utf-8")
+                    subprocess.Popen(str(bat_script), shell=True)
+                    
+                    def _delayed_exit():
+                        time.sleep(1.0)
+                        os._exit(0)
+                    threading.Thread(target=_delayed_exit, daemon=True).start()
+
                 return {
                     "success": True,
-                    "message": "热更新补丁已成功应用，请重启软件！",
+                    "message": "热更新补丁已成功应用，程序正在自动重启...",
                     "need_restart": True
                 }
             except Exception as e:
                 return {"success": False, "message": f"补丁解压失败: {str(e)}"}
 
-        # 方案 B: Windows 独立 EXE 覆盖替换与自重启
-        if sys.platform == "win32":
-            current_exe = Path(sys.executable) if is_frozen else (Path(__file__).parent.parent / "run_app.bat")
-            bat_script = get_app_data_dir() / "apply_restart.bat"
+        # 方案 B: 若下载的是安装向导程序 (Setup.exe / 安装包)
+        is_setup_installer = "setup" in target_path.name.lower() or "installer" in target_path.name.lower()
 
-            bat_content = f"""@echo off
+        if sys.platform == "win32":
+            bat_script = get_app_data_dir() / "apply_restart.bat"
+            current_exe = Path(sys.executable) if is_frozen else (Path(__file__).parent.parent / "run_app.bat")
+
+            if is_setup_installer:
+                # 唤起全新安装向导进行安全升级安装
+                bat_content = f"""@echo off
+chcp 65001 >nul
+echo 正在启动全新安装向导...
+ping 127.0.0.1 -n 2 >nul
+taskkill /F /PID {current_pid} >nul 2>&1
+ping 127.0.0.1 -n 2 >nul
+start "" "{target_path}"
+del "%~f0"
+exit
+"""
+            else:
+                # 独立同名主程序 EXE 原生热覆盖替换
+                bat_content = f"""@echo off
 chcp 65001 >nul
 echo 正在等待原程序关闭并安装更新...
 ping 127.0.0.1 -n 2 >nul
-
-:: 等待进程完全释放
 taskkill /F /PID {current_pid} >nul 2>&1
 ping 127.0.0.1 -n 2 >nul
-
-:: 覆盖新文件
 copy /Y "{target_path}" "{current_exe}" >nul
-
-:: 启动新版本
 start "" "{current_exe}"
-
-:: 自清理
 del "%~f0"
 exit
 """
             try:
                 bat_script.write_text(bat_content, encoding="utf-8")
-                # 隐藏控制台启动更新批处理
                 startupinfo = subprocess.STARTUPINFO()
                 startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                 startupinfo.wShowWindow = subprocess.SW_HIDE
                 subprocess.Popen(str(bat_script), shell=True, startupinfo=startupinfo)
 
-                # 稍后主动退出当前 Python 进程
                 def _delayed_exit():
                     time.sleep(1.0)
                     os._exit(0)
 
-                import threading
                 threading.Thread(target=_delayed_exit, daemon=True).start()
 
                 return {
                     "success": True,
-                    "message": "更新脚本已启动，程序即将自动重启...",
+                    "message": "更新向导已启动，程序即将自动重启升级...",
                     "need_restart": True
                 }
             except Exception as e:
-                return {"success": False, "message": f"创建升级启动器失败: {str(e)}"}
+                return {"success": False, "message": f"启动升级程序失败: {str(e)}"}
 
         return {"success": False, "message": "当前操作系统请手动覆盖可执行文件完成更新"}
 
