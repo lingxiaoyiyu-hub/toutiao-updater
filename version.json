@@ -9,8 +9,8 @@
     "3. 🌐【云端引擎】集成 GitHub 极速远程推送与紧急反爬广播系统",
     "4. 🔐【底层加固】Windows 物理硬件指纹永久持久化，会员激活永不失效"
   ],
-  "download_url": "https://github.com/lingxiaoyiyu-hub/toutiao-updater/releases",
-  "hot_update_zip_url": "",
+  "download_url": "https://github.com/lingxiaoyiyu-hub/toutiao-updater/releases/download/v2.6.0/patch_v2.6.0.zip",
+  "hot_update_zip_url": "https://github.com/lingxiaoyiyu-hub/toutiao-updater/releases/download/v2.6.0/patch_v2.6.0.zip",
   "announcement": {
     "id": "ann_20260831_v260",
     "title": "📢 官方云端实时推送测试",
