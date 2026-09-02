@@ -35,6 +35,10 @@ license_tool/license_private_key.pem
 # 敏感 AI 配置 (请基于 ai_config.json.example 配置)
 data/ai_config.json
 
+# 在线授权服务整体 (卡密服务器代码/管理令牌/部署配置，绝不进入公开仓库)
+license_server/
+core.meta
+
 # IDE / 编辑器配置
 .vscode/
 .idea/
