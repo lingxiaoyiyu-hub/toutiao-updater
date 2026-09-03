@@ -12,11 +12,11 @@
   ],
   "download_url": "https://share.feijipan.com/s/7A8jdSpZ",
   "hot_update_zip_url": "",
-  "sha256": "0b7e6f51ef384719d5f681be102d8cd615b524aff7c97e48f8859a36f6a6dd21",
+  "sha256": "c330f15aa93cd3d96b190750fc2c6b16e73a42177b31fe5276391271ea2b1f87",
   "announcement": {
     "id": "ann_20260903_v300",
     "title": "📢 v3.0.0 重磅版本更新说明",
     "content": "✨ LingCraft 全能创作工具 v3.0.0 重磅发布！本次升级包含采集文章库勾选批量导出与删除、全网热搜自由勾选一键批量创作、大模型智能清洗过滤与排错指南升级等多项核心体验优化。老用户仍按已有授权终身免费更新，请前往官方下载渠道获取最新版本。"
   },
-  "sha256_zip": "2705b203311e32b3ff27e4b969b2c8e7704980625008c3930b66af9017e6595e"
+  "sha256_zip": "539d5ad7de4260de4bde3c48a2b80ef2e49d42e1d67909f927aa66de38a5a8cf"
 }
