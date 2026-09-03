@@ -13,7 +13,7 @@
 
 ## 下载
 
-- **最新版本**：v3.0.1
+- **最新版本**：v3.0.2
 - **发行版下载**：[GitHub Releases](https://github.com/lingxiaoyiyu-hub/toutiao-updater/releases)
 
 发行版提供两种形式：
