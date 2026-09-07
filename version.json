@@ -12,11 +12,11 @@
   ],
   "download_url": "https://share.feijipan.com/s/BJ9UrPWO",
   "hot_update_zip_url": "",
-  "sha256": "be5dd6f924fe7149286c811780aee7bd04e3257bfd90bb81bae53ef6f5af80f3",
+  "sha256": "508fc83492c8dc56fed144e15904ae56e6adae84e47eec0ca6ad5873e5ac76fd",
   "announcement": {
     "id": "ann_20260907_v331",
     "title": "📢 v3.3.1 更新公告 · 采集库一键清空与排版沉浸工作台重构",
     "content": "v3.3.1 已发布：🗑️ 文章采集与实时爆文库支持一键清空与模态确认、🖥️ 排版助手一体化无框工作台重构、📄 AI配置新手教程极简流式排版、🎨 全面矢量线框图标系统统一。建议升级体验！"
   },
-  "sha256_zip": "eefbaec60014cff6e4765c9c34c88ea942c9ba9b6a3afe03a191f825e9b783d6"
+  "sha256_zip": "311a47bbfda2206321a622827d4a822502c49e9ef4d765a4601b7306575fd4aa"
 }
