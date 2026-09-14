@@ -1,22 +1,21 @@
 {
-  "latest_version": "3.4.8",
+  "latest_version": "3.4.10",
   "release_date": "2026-09-14",
   "force_update": false,
-  "title": "🎉 LingCraft v3.4.8 热更发布 · 小说工坊全链路加固 + 极速原生导出引擎 + 账号扫码深度防御",
+  "title": "🎉 LingCraft v3.4.10 热更发布 · 小说工坊全链路微创审计/AI检测/实时字数统计与安全加固",
   "changelog": [
-    "1. 🚀【系统极速导出与杀软防御】引入 0.01 秒 Win32 原生对话框引擎，彻底根除导出弹窗卡顿与杀软静默拦截，全系统文件/目录秒级调起并原生高亮定位；",
-    "2. 📖【小说工坊 Word 导出升级】小说写作导出 Word 全面重构，支持原生另存为与一键打开所在文件夹，大纲分卷抽屉新增目录一键浏览选择；",
-    "3. 🛡️【自媒体扫码登录深度防御】根治账号扫码「Unexpected token I」报错，补齐内核自动探测、单例互斥锁清理与前端安全响应解析；",
-    "4. ⚙️【小说工坊全链路序号规整】彻底根除写作序号突变第2章缺陷，修复章节删除后序号断档、大纲分卷幂等同步与防重拆章；",
-    "5. ⏳【长耗时 AI 交互全面升级】AI润色、伏笔审计、断章钩子与分卷拆章全面补齐秒级耗时追踪、Spinner 转圈动效与防跨章串稿互斥锁。"
+    "1. 🩺【连续性审计】升级微创手术级句段对比与单句替换体系，支持正文原句与建议改写句精确Diff对比，提供【应用替换原句】、【插入到段落后】、【插入到光标处】与【定位原句】全套微创动作流；",
+    "2. 🔍【AI检测体系】写作顶栏打通【AI检测】核心快捷入口，彻底解决失焦归零误插文首缺陷；升级动态上下文检索与标点容错算法，免疫正文修改字符偏移；",
+    "3. 📊【全书实时统计】彻底根除顶端栏卡死0字0章缺陷，构建分卷穿透式动态聚合引擎，实时响应码字、保存、增删与分章，同步刷新概要面板；",
+    "4. 🛡️【小说全链路加固】防抖缓冲期误关/刷新同步兜底落库；AI生成网络异常原稿自动回滚；Word导出独占锁防御与时间戳安全另存；补齐工作台与目录树章节标题重命名；目录树空分卷智能折叠与全屏ESC状态同步。"
   ],
   "download_url": "https://www.modelscope.cn/models/lingxiaoyiyu/lingcraft-releases/resolve/master/LingCraft_Setup_v3.4.0.exe",
-  "hot_update_zip_url": "https://www.modelscope.cn/models/lingxiaoyiyu/lingcraft-releases/resolve/master/hot_update_v3.4.8.zip",
+  "hot_update_zip_url": "https://www.modelscope.cn/models/lingxiaoyiyu/lingcraft-releases/resolve/master/hot_update_v3.4.10.zip",
   "sha256": "06531fc7475aebbca82742c1f49e91fb36d71bf954787b2f041f1ed8ab0806f7",
   "announcement": {
-    "id": "ann_20260914_v348",
-    "title": "📢 v3.4.8 热更推送公告",
-    "content": "v3.4.8 已推送上线：1. 🚀【系统极速导出与杀软防御】引入 0.01 秒 Win32 原生对话框引擎，彻底根除导出弹窗卡顿与杀软静默拦截，全系统文件/目录秒级调起并原生高亮定位；。欢迎升级体验！"
+    "id": "ann_20260914_v3410",
+    "title": "📢 v3.4.10 热更推送公告",
+    "content": "v3.4.10 已推送上线：1. 🩺【连续性审计】升级微创手术级句段对比与单句替换体系，支持正文原句与建议改写句精确Diff对比，提供【应用替换原句】、【插入到段落后】、【插入到光标处】与【定位原句】全套微创动作流；。欢迎升级体验！"
   },
-  "sha256_zip": "39e1de9cac9b75afe8a1c384bce432deeac59ee73a5535155bfa2f572dd664ad"
+  "sha256_zip": "f10bb8e80d55de56c74378609cb9677b575c8f9ec25fa8d639cf6eecd0269d0f"
 }
