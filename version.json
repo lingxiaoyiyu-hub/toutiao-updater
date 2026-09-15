@@ -11,9 +11,9 @@
     "5. 🩺【AI检测垂直卡片】彻底修复右侧抽屉排查卡片横向挤压变形与文字竖排细条缺陷，重构为标准自适应垂直流式卡片；",
     "6. ✨【系统视觉规范统一】全面剔除彩色 Emoji，全量替换为 Feather/Lucide 线性微矢 SVG 与极简圆点指示器规范。"
   ],
-  "download_url": "https://www.modelscope.cn/models/lingxiaoyiyu/lingcraft-releases/resolve/master/LingCraft_Setup_v3.4.0.exe",
+  "download_url": "https://www.modelscope.cn/models/lingxiaoyiyu/lingcraft-releases/resolve/master/LingCraft_Setup_v3.4.11.exe",
   "hot_update_zip_url": "https://www.modelscope.cn/models/lingxiaoyiyu/lingcraft-releases/resolve/master/hot_update_v3.4.11.zip",
-  "sha256": "06531fc7475aebbca82742c1f49e91fb36d71bf954787b2f041f1ed8ab0806f7",
+  "sha256": "18d7d6eb6ff1c91a4f6c3a8d98886417e2b8f0c82c5ba6961c82cc5ac0384c42",
   "announcement": {
     "id": "ann_20260915_v3411",
     "title": "📢 v3.4.11 热更推送公告",
